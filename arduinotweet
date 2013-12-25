@@ -1,0 +1,44 @@
+#include <Ethernet.h>
+#include <SPI.h>
+#include <Twitter.h>
+
+int button=9;
+char kata[100];
+
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; // Mac Address Default
+byte ip[] = { 192, 168, 1, 7 }; // Ip untuk Ethernet shield
+
+Twitter twitter("##################"); // isi dengan token akun Twitter mu
+
+void setup(){
+  pinMode(button, INPUT);
+  Ethernet.begin(mac, ip);
+  Serial.begin(9600);
+  
+}
+
+
+void loop() {
+if (digitalRead(button) == HIGH) {
+
+sprintf(kata, "This is tweet number %d via an #Arduino Ethernet Board!");
+tweet(kata);
+// zero delay
+delay(0);
+}
+}
+
+void tweet(char msg[]) {
+        Serial.println("connecting ...");
+                if (twitter.post(msg)) {
+                   int status = twitter.wait(&Serial);
+                       if (status == 200) {
+                       Serial.println("OK.");
+                       } else {
+                       Serial.print("failed : code ");
+                       Serial.println(status);
+                      }
+               } else {
+               Serial.println("connection failed.");
+               }
+}
