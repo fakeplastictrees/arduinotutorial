@@ -7,7 +7,9 @@
 #include <Keypad.h>
 #include <Password.h>
 
-Password password = Password("7520"); //inisialisasi password nya.
+byte currentLength = 0;
+
+Password password = Password("1234"); //inisialisasi password nya.
 LiquidCrystal lcd(13, 12, 11, 10, 9, 8); //inisialisasi pada LCD.
 
 //karena tutorial ini menggunakan 4x4 jelas jadi kolom 4 dan baris 4
@@ -54,8 +56,9 @@ void setup(){
 
 void loop(){
   lcd.setCursor(0,0);
-  lcd.print("Password :");
+  lcd.print("Pass:");
   keypad.getKey();;
+  
 }
 
 
@@ -83,11 +86,22 @@ void keypadEvent(KeypadEvent eKey){
 	lcd.setCursor(0,1);
         lcd.print(eKey);
 	switch (eKey){
-	  case '*': checkPassword(); break;
-	  case '#': password.reset(); break;
-	  default: password.append(eKey);
-     }
+	  case '*': checkPassword(); lcd.clear(); currentLength=0;break;
+	  case '#': password.reset(); lcd.clear();currentLength=0; break;
+	  default:// password.append(eKey);
+          password << eKey;
+          currentLength++;
+        
+        //Print some feedback.
+        lcd.setCursor(0,0);
+        lcd.print("Pass: ");
+        for (byte i=0; i<currentLength; i++){
+            lcd.print('*');
+        }
+           
+   }
   }
+  
 }  
 
 
